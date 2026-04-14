@@ -46,7 +46,7 @@ export default function Footer() {
       <div className="relative z-10 w-full max-w-7xl mx-auto mt-32 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
         <p className="text-gray-500 text-sm">© {new Date().getFullYear()} Manas Singh Rawat. All rights reserved.</p>
         <div className="flex items-center gap-6 text-sm text-gray-400">
-          <a href="https://linkedin.com/in/manas-rawat" target="_blank" rel="noreferrer" className="hover:text-white transition-colors duration-300">LinkedIn</a>
+          <a href="https://www.linkedin.com/in/manas-rawat-bbb597213/" target="_blank" rel="noreferrer" className="hover:text-white transition-colors duration-300">LinkedIn</a>
           <a href="tel:9654358055" className="hover:text-white transition-colors duration-300">+91 96543 58055</a>
         </div>
       </div>
