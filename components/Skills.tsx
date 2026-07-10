@@ -44,6 +44,36 @@ const skills = [
     icon: SiFramer, 
     color: "#0055FF", 
     startPos: { x: 600, y: -600, rotate: 180 } 
+  },
+  {
+    name: "InDesign",
+    label: "Id",
+    color: "#FF1A75", // InDesign Pink/Magenta
+    startPos: { x: -500, y: 900, rotate: -120 },
+  },
+  {
+    name: "PowerPoint",
+    label: "Pp",
+    color: "#D24726", // PowerPoint Orange/Red
+    startPos: { x: 400, y: -850, rotate: 150 },
+  },
+  {
+    name: "Veeva Vault",
+    label: "Vv",
+    color: "#FF8C00", // Veeva Orange
+    startPos: { x: -700, y: -400, rotate: 45 },
+  },
+  {
+    name: "Jira",
+    label: "Jr",
+    color: "#0052CC", // Jira Blue
+    startPos: { x: -200, y: 800, rotate: -60 },
+  },
+  {
+    name: "Workfront",
+    label: "Wf",
+    color: "#18E8B8", // Workfront Cyan
+    startPos: { x: 900, y: -200, rotate: 110 },
   }
 ];
 
@@ -67,8 +97,8 @@ export default function Skills() {
           animate={{ x: ["0%", "-50%"] }}
           transition={{ duration: 35, ease: "linear", repeat: Infinity }}
         >
-          <span className="pr-16">PREMIERE PRO • PHOTOSHOP • ILLUSTRATOR • FIGMA • AFTER EFFECTS •</span>
-          <span className="pr-16">PREMIERE PRO • PHOTOSHOP • ILLUSTRATOR • FIGMA • AFTER EFFECTS •</span>
+          <span className="pr-16">PREMIERE PRO • PHOTOSHOP • ILLUSTRATOR • FIGMA • AFTER EFFECTS • INDESIGN • POWERPOINT • VEEVA VAULT • JIRA • WORKFRONT •</span>
+          <span className="pr-16">PREMIERE PRO • PHOTOSHOP • ILLUSTRATOR • FIGMA • AFTER EFFECTS • INDESIGN • POWERPOINT • VEEVA VAULT • JIRA • WORKFRONT •</span>
         </motion.div>
       </div>
 
