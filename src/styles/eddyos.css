@@ -1,0 +1,916 @@
+/* ─────────────────────────────────────────────────────────────
+   EDDY-NABOULET.DEV RETRO OS DESIGN SYSTEM
+   Faithful recreation of eddy-naboulet.dev for Sidharth Singh Rawat
+───────────────────────────────────────────────────────────── */
+
+:root {
+  /* Default Theme: Phosphore (Amber CRT) */
+  --papier: #14100a;
+  --grid: #3a2a14;
+  --rouille: #8c2a18;
+  --braise: #e0501e;
+  --encre: #ffa02e;
+  --creme: #ffe2b0;
+
+  --filet: 1px;
+  --trait: 3px;
+  --trait-fin: 2px;
+  --ombre: 6px 6px 0 var(--braise);
+  --font-display: "Jacquard 12", "DotGothic16", monospace;
+  --font-ui: "DotGothic16", monospace;
+}
+
+:root[data-theme="lagon"] {
+  --papier: #041606;
+  --grid: #1D3420;
+  --rouille: #0B5A66;
+  --braise: #398847;
+  --encre: #70C1E1;
+  --creme: #FFF183;
+}
+
+:root[data-theme="acidule"] {
+  --papier: #01141D;
+  --grid: #0F323F;
+  --rouille: #0B5A66;
+  --braise: #82BA88;
+  --encre: #FAA4B5;
+  --creme: #FFF183;
+}
+
+:root[data-theme="sorbet"] {
+  --papier: #22070E;
+  --grid: #442229;
+  --rouille: #832758;
+  --braise: #70C1E1;
+  --encre: #F8B77C;
+  --creme: #FAF4C1;
+}
+
+:root[data-theme="neon"] {
+  --papier: #1E0D00;
+  --grid: #41270E;
+  --rouille: #803705;
+  --braise: #0B96AF;
+  --encre: #82BA88;
+  --creme: #FAA4B5;
+}
+
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--papier);
+  color: var(--encre);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--encre);
+  color: var(--papier);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  background: none;
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+/* Optional CRT Scanlines Effect */
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+              linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  background-size: 100% 3px, 6px 100%;
+  opacity: 0.6;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   1. BOOT SCREEN (.os-boot)
+───────────────────────────────────────────────────────────── */
+
+.os-boot {
+  position: fixed;
+  inset: 0;
+  background: var(--papier);
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  cursor: pointer;
+}
+
+.os-boot.is-done {
+  display: none;
+}
+
+.os-boot .inner {
+  width: min(560px, 94vw);
+}
+
+.os-boot .logo {
+  border: var(--trait) solid var(--encre);
+  background: var(--papier);
+  box-shadow: var(--ombre);
+  text-align: center;
+  margin-bottom: 22px;
+  padding: 26px 24px 22px;
+}
+
+.os-boot .logo .name {
+  font-family: var(--font-display);
+  color: var(--creme);
+  font-size: 46px;
+  line-height: 1;
+  display: block;
+  letter-spacing: 0.04em;
+}
+
+.os-boot .logo .v {
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-top: 6px;
+  font-size: 12px;
+  display: block;
+  color: var(--encre);
+}
+
+.os-boot .logo:after {
+  content: "";
+  background: linear-gradient(90deg, var(--rouille) 0 20%, var(--braise) 20% 40%, var(--encre) 40% 60%, var(--creme) 60% 80%, var(--grid) 80% 100%);
+  height: 12px;
+  margin-top: 18px;
+  display: block;
+}
+
+.os-boot .log {
+  border: var(--trait) solid var(--encre);
+  background: var(--papier);
+  padding: 14px 18px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--encre);
+}
+
+.os-boot .prog {
+  border: var(--trait-fin) solid var(--encre);
+  margin-top: 14px;
+  padding: 3px;
+}
+
+.os-boot .prog i {
+  background: repeating-linear-gradient(90deg, var(--encre) 0 8px, transparent 8px 11px);
+  width: 100%;
+  height: 10px;
+  display: block;
+  animation: bootProgress 1.6s steps(10, end);
+}
+
+@keyframes bootProgress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+.os-boot .press {
+  text-align: center;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--creme);
+  animation: os-blink 1.2s steps(2, end) infinite;
+}
+
+@keyframes os-blink {
+  50% { opacity: 0.2; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   2. TOP HEADER (.os-header)
+───────────────────────────────────────────────────────────── */
+
+.os-header {
+  border-bottom: var(--filet) solid var(--encre);
+  background: var(--papier);
+  z-index: 200;
+  position: relative;
+  user-select: none;
+}
+
+.os-header .top {
+  display: flex;
+  align-items: stretch;
+  min-height: 48px;
+}
+
+.os-logo {
+  border-right: var(--filet) solid var(--encre);
+  align-items: center;
+  padding: 0 20px;
+  display: flex;
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.16s;
+}
+
+.os-logo .name {
+  font-family: var(--font-display);
+  color: var(--creme);
+  font-size: 26px;
+  line-height: 1;
+}
+
+.os-logo:hover {
+  background: var(--encre);
+}
+.os-logo:hover .name {
+  color: var(--papier);
+}
+
+.os-menus {
+  display: flex;
+  align-items: stretch;
+  margin-right: auto;
+}
+
+.os-menus .menu {
+  display: flex;
+  position: relative;
+}
+
+.os-menus .mbtn {
+  font-size: 14px;
+  color: var(--encre);
+  align-items: center;
+  padding: 0 16px;
+  display: flex;
+  position: relative;
+  transition: color .16s;
+}
+
+.os-menus .mbtn:hover,
+.os-menus .mbtn.is-active {
+  color: var(--creme);
+  background: linear-gradient(0deg, var(--grid), transparent 65%);
+}
+
+.os-menus .dropdown {
+  background: var(--papier);
+  border: var(--filet) solid var(--encre);
+  width: 280px;
+  box-shadow: 4px 4px 0 var(--grid);
+  z-index: 300;
+  padding: 6px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.os-menus .dropdown .di {
+  width: 100%;
+  min-height: 40px;
+  color: var(--encre);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: 13px;
+  transition: all .16s;
+  cursor: pointer;
+}
+
+.os-menus .dropdown .di:hover {
+  background: var(--grid);
+  color: var(--creme);
+}
+
+.os-menus .dropdown .fig {
+  opacity: .6;
+  margin-right: 8px;
+  font-size: 11px;
+}
+
+.os-menus .dropdown kbd {
+  border: var(--filet) solid var(--grid);
+  padding: 1px 5px;
+  font-size: 11px;
+  color: var(--creme);
+}
+
+.os-menus .dropdown .sep {
+  height: var(--filet);
+  background: var(--grid);
+  margin: 6px 0;
+}
+
+.os-cart {
+  border-left: var(--filet) solid var(--encre);
+  display: flex;
+}
+
+.os-cell {
+  border-left: var(--filet) solid var(--encre);
+  justify-content: center;
+  align-items: center;
+  min-width: 110px;
+  padding: 6px 14px;
+  display: flex;
+  font-size: 13px;
+}
+
+.os-cell:first-child {
+  border-left: none;
+}
+
+.os-cell .led {
+  background: var(--encre);
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  animation: os-blink 2s steps(2, end) infinite;
+}
+
+/* Sub-header breadcrumb */
+.os-header .sub {
+  border-top: var(--filet) solid var(--encre);
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+}
+
+.os-header .sub .cell {
+  border-right: var(--filet) solid var(--grid);
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  display: flex;
+}
+
+.os-header .sub .seg {
+  cursor: pointer;
+  color: var(--encre);
+}
+.os-header .sub .seg:hover {
+  color: var(--creme);
+}
+
+.os-header .sub .here {
+  color: var(--creme);
+}
+
+.os-header .sub .cell.r {
+  border-right: none;
+  border-left: var(--filet) solid var(--grid);
+  margin-left: auto;
+  letter-spacing: 0.08em;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   3. DESKTOP WORKSPACE & SPACES
+───────────────────────────────────────────────────────────── */
+
+.os-desktop-inner {
+  position: absolute;
+  inset: 72px 0 0;
+  overflow: hidden;
+  background-color: var(--papier);
+}
+
+/* 3.1 DESKTOP HOME HERO (.os-home) */
+.os-home {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.os-home-mast {
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.os-home-mast .kicker {
+  background: var(--papier);
+  border: var(--filet) solid var(--grid);
+  letter-spacing: .38em;
+  text-transform: uppercase;
+  color: var(--encre);
+  padding: 4px 16px;
+  font-size: 11px;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.os-home-mast .name {
+  font-family: var(--font-display);
+  color: var(--creme);
+  font-size: clamp(52px, 11vw, 160px);
+  line-height: .9;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 20px rgba(255, 160, 46, 0.15);
+}
+
+.os-home-mast .subname {
+  font-size: clamp(13px, 1.4vw, 17px);
+  color: var(--encre);
+  margin-top: 14px;
+  letter-spacing: 0.12em;
+}
+
+/* 4 Corner Workspace Buttons */
+.os-home-nav .hs {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  padding: 16px;
+  transition: all 0.2s;
+  background: rgba(58, 42, 20, 0.15);
+  border: var(--filet) solid transparent;
+}
+
+.os-home-nav .hs:hover {
+  background: rgba(58, 42, 20, 0.5);
+  border-color: var(--encre);
+}
+
+.os-home-nav .hs:nth-of-type(1) { top: 32px; left: 40px; }
+.os-home-nav .hs:nth-of-type(2) { top: 32px; right: 40px; text-align: right; align-items: flex-end; }
+.os-home-nav .hs:nth-of-type(3) { bottom: 32px; left: 40px; }
+.os-home-nav .hs:nth-of-type(4) { bottom: 32px; right: 40px; text-align: right; align-items: flex-end; }
+
+@media (max-width: 767px) {
+  .os-home-nav .hs:nth-of-type(1) { top: 12px; left: 16px; }
+  .os-home-nav .hs:nth-of-type(2) { top: 12px; right: 16px; }
+  .os-home-nav .hs:nth-of-type(3) { bottom: 12px; left: 16px; }
+  .os-home-nav .hs:nth-of-type(4) { bottom: 12px; right: 16px; }
+}
+
+.os-home-nav .hs .fig {
+  font-family: var(--font-display);
+  color: var(--braise);
+  font-size: 36px;
+  line-height: 1;
+}
+
+.os-home-nav .hs .f {
+  font-size: 11px;
+  opacity: .7;
+  color: var(--encre);
+}
+
+.os-home-nav .hs .t {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--creme);
+  line-height: 1;
+}
+
+.os-home-nav .hs .go {
+  font-size: 11px;
+  color: var(--encre);
+  margin-top: 4px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   4. RETRO OS DIALOG WINDOW (.os-window)
+───────────────────────────────────────────────────────────── */
+
+.os-window-overlay {
+  position: fixed;
+  inset: 48px 0 0;
+  background: rgba(20, 16, 10, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 250;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 3vw, 40px);
+}
+
+.os-window {
+  width: min(980px, 100%);
+  max-height: calc(100vh - 120px);
+  background: var(--papier);
+  border: var(--trait) solid var(--encre);
+  box-shadow: var(--ombre);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.os-window-header {
+  background: var(--grid);
+  border-bottom: var(--filet) solid var(--encre);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.os-window-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--creme);
+}
+
+.os-window-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.os-win-btn {
+  border: var(--filet) solid var(--encre);
+  padding: 2px 7px;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--encre);
+  cursor: pointer;
+  background: var(--papier);
+}
+
+.os-win-btn:hover {
+  background: var(--braise);
+  color: var(--creme);
+}
+
+.os-window-body {
+  padding: clamp(18px, 3vw, 32px);
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   5. WORKSPACE 01: PROJECTS SPACE (.os-sphere / projects.vol)
+───────────────────────────────────────────────────────────── */
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.project-card {
+  border: var(--filet) solid var(--grid);
+  background: rgba(58, 42, 20, 0.2);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.2s;
+}
+
+.project-card:hover {
+  border-color: var(--encre);
+  box-shadow: 4px 4px 0 var(--grid);
+}
+
+.project-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: var(--filet) solid var(--grid);
+  padding-bottom: 8px;
+}
+
+.project-fig {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--braise);
+}
+
+.project-file {
+  font-size: 12px;
+  color: var(--encre);
+  opacity: .8;
+}
+
+.project-title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  color: var(--creme);
+  line-height: 1;
+}
+
+.project-subtitle {
+  font-size: 12px;
+  color: var(--encre);
+  text-transform: uppercase;
+}
+
+.project-desc {
+  font-size: 14px;
+  color: var(--creme);
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.project-tag {
+  border: var(--filet) solid var(--grid);
+  padding: 3px 8px;
+  font-size: 11px;
+  color: var(--encre);
+}
+
+.project-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.project-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: var(--trait-fin) solid var(--encre);
+  background: var(--encre);
+  color: var(--papier);
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.project-btn:hover {
+  background: var(--creme);
+  border-color: var(--creme);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   6. WORKSPACE 02: GIT-LOG PARCOURS TIMELINE (.os-parcours)
+───────────────────────────────────────────────────────────── */
+
+.pq-cmd {
+  background: var(--grid);
+  padding: 8px 14px;
+  border-bottom: var(--filet) solid var(--encre);
+  font-size: 13px;
+  color: var(--creme);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pq-timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.pq-item {
+  border-left: var(--trait) solid var(--encre);
+  padding-left: 20px;
+  position: relative;
+}
+
+.pq-item::before {
+  content: "◆";
+  position: absolute;
+  left: -8px;
+  top: 0;
+  color: var(--braise);
+  background: var(--papier);
+  font-size: 14px;
+}
+
+.pq-meta {
+  font-size: 12px;
+  color: var(--encre);
+  display: flex;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.pq-hash {
+  color: var(--braise);
+  font-weight: 700;
+}
+
+.pq-item h3 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--creme);
+  line-height: 1.1;
+}
+
+.pq-role {
+  font-size: 12px;
+  color: var(--encre);
+  margin-bottom: 8px;
+}
+
+.pq-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--creme);
+  opacity: .9;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   7. WORKSPACE 03: PROFIL.SYS & CHARACTER INSPECTOR
+───────────────────────────────────────────────────────────── */
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profile-photo-frame {
+  border: var(--trait) solid var(--encre);
+  background: var(--grid);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 4px 4px 0 var(--braise);
+}
+
+.profile-photo-wrap {
+  width: 100%;
+  height: 380px;
+  background: #000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.profile-photo-img {
+  max-height: 100%;
+  width: auto;
+  object-fit: contain;
+}
+
+.photo-angle-tabs {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.photo-tab-btn {
+  flex: 1;
+  border: var(--filet) solid var(--encre);
+  padding: 6px;
+  font-size: 11px;
+  color: var(--encre);
+  text-align: center;
+  cursor: pointer;
+}
+
+.photo-tab-btn.active {
+  background: var(--encre);
+  color: var(--papier);
+  font-weight: 700;
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile-name {
+  font-family: var(--font-display);
+  font-size: 42px;
+  color: var(--creme);
+  line-height: 1;
+}
+
+.profile-credentials {
+  font-size: 13px;
+  color: var(--braise);
+  border-bottom: var(--filet) solid var(--grid);
+  padding-bottom: 12px;
+}
+
+.profile-bio {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--creme);
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.tech-box {
+  border: var(--filet) solid var(--grid);
+  padding: 10px;
+  background: rgba(58, 42, 20, 0.2);
+}
+
+.tech-box-title {
+  font-size: 11px;
+  color: var(--braise);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.tech-box-list {
+  font-size: 12px;
+  color: var(--encre);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   8. WORKSPACE 04: CONTACT.APP
+───────────────────────────────────────────────────────────── */
+
+.contact-box {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.contact-email-row {
+  border: var(--trait) solid var(--encre);
+  padding: 20px;
+  background: rgba(58, 42, 20, 0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.email-val {
+  font-family: var(--font-display);
+  font-size: 32px;
+  color: var(--creme);
+}
+
+.contact-links-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.contact-link-card {
+  border: var(--filet) solid var(--grid);
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.contact-link-card:hover {
+  border-color: var(--encre);
+  background: rgba(58, 42, 20, 0.4);
+}
