@@ -6,7 +6,9 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeFlippedCard, setActiveFlippedCard] = useState(null);
   const [mouseTilt, setMouseTilt] = useState({ x: 0, y: 0 });
+  const [honking, setHonking] = useState(false);
   const heroRef = useRef(null);
+  const boostRef = useRef(0);
 
   // Intro transition
   useEffect(() => {
@@ -15,6 +17,89 @@ export default function App() {
     }, 1200);
     return () => clearTimeout(timer);
   }, []);
+
+  // 3D Animated Car Running on the Yellow Ribbon Track
+  useEffect(() => {
+    const path = document.getElementById('ribbonPath');
+    const car = document.getElementById('trackCar');
+    const story = document.getElementById('story');
+    const svg = document.getElementById('storyRibbonSvg');
+    if (!path || !car || !story || !svg) return;
+
+    let totalLen = 0;
+    try {
+      totalLen = path.getTotalLength();
+    } catch {
+      return;
+    }
+    if (!totalLen) return;
+
+    let currentLen = 30;
+    let targetLen = 30;
+    let autoCruise = 0;
+    let rafId;
+
+    const handleScroll = () => {
+      const rect = story.getBoundingClientRect();
+      const windowH = window.innerHeight;
+      const scrollRange = rect.height - windowH;
+      if (scrollRange <= 0) return;
+      // Calculate progress through story section
+      const progress = Math.min(1, Math.max(0, -rect.top / scrollRange));
+      targetLen = Math.max(15, Math.min(totalLen - 15, progress * totalLen));
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    const animate = () => {
+      // Smooth lerp to scroll position
+      const diff = targetLen - currentLen;
+      currentLen += diff * 0.08 + boostRef.current;
+
+      // Decay nitro boost
+      if (boostRef.current > 0.1) {
+        boostRef.current *= 0.92;
+      } else {
+        boostRef.current = 0;
+      }
+
+      // Small gentle cruise when resting
+      if (Math.abs(diff) < 2 && boostRef.current === 0) {
+        autoCruise = (autoCruise + 0.3) % totalLen;
+      }
+
+      const effectiveLen = Math.min(totalLen - 15, Math.max(10, currentLen));
+      const pt = path.getPointAtLength(effectiveLen);
+      const ptNext = path.getPointAtLength(Math.min(totalLen, effectiveLen + 4));
+
+      const svgRect = svg.getBoundingClientRect();
+      const scaleX = (svgRect.width || 1440) / 1440;
+      const scaleY = (svgRect.height || 3200) / 3200;
+
+      const dx = (ptNext.x - pt.x) * scaleX;
+      const dy = (ptNext.y - pt.y) * scaleY;
+      const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+      car.setAttribute('transform', `translate(${pt.x.toFixed(1)}, ${pt.y.toFixed(1)}) rotate(${angle.toFixed(1)})`);
+
+      rafId = requestAnimationFrame(animate);
+    };
+
+    rafId = requestAnimationFrame(animate);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  const handleCarClick = (e) => {
+    e.stopPropagation();
+    boostRef.current = 22; // Nitro speed burst!
+    setHonking(true);
+    setTimeout(() => setHonking(false), 1400);
+  };
 
   // 3D Mouse Parallax Tilt for Live Hero Character
   const handleHeroMouseMove = (e) => {
@@ -178,13 +263,135 @@ export default function App() {
           <div className="hero-bg"></div>
           <div className="sheet-bg"></div>
 
-          {/* SVG RIBBON CONNECTING HERO TO PATH */}
-          <svg className="story-ribbon rb" viewBox="0 0 1440 3200" preserveAspectRatio="none" aria-hidden="true">
+          {/* SVG RIBBON CONNECTING HERO TO PATH + 3D TRACK CAR RACER */}
+          <svg
+            id="storyRibbonSvg"
+            className="story-ribbon rb"
+            viewBox="0 0 1440 3200"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id="carHeadlightBeam" x1="0%" y1="50%" x2="100%" y2="50%">
+                <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.85" />
+                <stop offset="35%" stopColor="#FAD105" stopOpacity="0.65" />
+                <stop offset="100%" stopColor="#FAD105" stopOpacity="0" />
+              </linearGradient>
+              <filter id="car3DShadow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="10" stdDeviation="6" floodColor="#462615" floodOpacity="0.32" />
+              </filter>
+            </defs>
+
             <path
+              id="ribbonPath"
               className="base"
               d="M 280 400 Q 450 650 680 720 T 960 1100 Q 1150 1350 950 1600 T 420 2050 Q 200 2400 520 2750 T 820 3180"
               strokeWidth="58"
             />
+
+            {/* 3D RACER CAR THAT RUNS ON THE YELLOW LINE */}
+            <g
+              id="trackCar"
+              onClick={handleCarClick}
+              style={{ filter: 'url(#car3DShadow)', cursor: 'pointer', pointerEvents: 'auto' }}
+            >
+              {/* Headlight beams lighting the track */}
+              <polygon points="36,-9 140,-32 140,32 36,9" fill="url(#carHeadlightBeam)" />
+
+              {/* Tires / Wheels (4 rubber tires with chrome accents) */}
+              <rect x="15" y="-22" width="16" height="7" rx="3" fill="#1b120c" stroke="#462615" strokeWidth="1.5" />
+              <circle cx="23" cy="-18.5" r="2.2" fill="#FAD105" />
+
+              <rect x="15" y="15" width="16" height="7" rx="3" fill="#1b120c" stroke="#462615" strokeWidth="1.5" />
+              <circle cx="23" cy="18.5" r="2.2" fill="#FAD105" />
+
+              <rect x="-28" y="-22" width="16" height="7" rx="3" fill="#1b120c" stroke="#462615" strokeWidth="1.5" />
+              <circle cx="-20" cy="-18.5" r="2.2" fill="#FAD105" />
+
+              <rect x="-28" y="15" width="16" height="7" rx="3" fill="#1b120c" stroke="#462615" strokeWidth="1.5" />
+              <circle cx="-20" cy="18.5" r="2.2" fill="#FAD105" />
+
+              {/* Aerodynamic Sports Chassis */}
+              <path
+                d="M -33 -15 C -36 -15 -38 -8 -38 0 C -38 8 -36 15 -33 15 L 18 15 C 28 15 35 9 36 0 C 35 -9 28 -15 18 -15 Z"
+                fill="#FFFFFF"
+                stroke="#462615"
+                strokeWidth="3.5"
+                strokeLinejoin="round"
+              />
+
+              {/* Sunshine Yellow & Dark Ink Racing Stripes */}
+              <path d="M -37 -3 L 35 -3 L 35 3 L -37 3 Z" fill="#FAD105" />
+              <path d="M -37 -1 L 35 -1 L 35 1 L -37 1 Z" fill="#462615" />
+
+              {/* Hood scoop */}
+              <path d="M 16 -6 L 24 -4 L 24 4 L 16 6 Z" fill="#462615" opacity="0.9" />
+
+              {/* Cockpit & Glass Windshield */}
+              <path
+                d="M -13 -11 L 8 -10 C 14 -10 16 -6 17 0 C 16 6 14 10 8 10 L -13 11 C -16 11 -17 6 -17 0 C -17 -6 -16 -11 -13 -11 Z"
+                fill="#2B180D"
+                stroke="#462615"
+                strokeWidth="2"
+              />
+              <path d="M -8 -8 L 5 -7 L 1 7 L -10 7 Z" fill="#FFFFFF" opacity="0.3" />
+
+              {/* Driver Helmet */}
+              <circle cx="-3" cy="0" r="5" fill="#FAD105" stroke="#462615" strokeWidth="1.5" />
+              <rect x="-1" y="-3" width="4" height="6" rx="1.5" fill="#1b120c" />
+
+              {/* Rear GT Wing / Spoiler */}
+              <rect x="-37" y="-17" width="6" height="34" rx="2" fill="#FAD105" stroke="#462615" strokeWidth="2.5" />
+              <rect x="-34" y="-8" width="3" height="16" fill="#462615" />
+
+              {/* High-intensity Headlights */}
+              <circle cx="34" cy="-7" r="3.5" fill="#FFFDE6" stroke="#462615" strokeWidth="1.5" />
+              <circle cx="34" cy="7" r="3.5" fill="#FFFDE6" stroke="#462615" strokeWidth="1.5" />
+
+              {/* Taillights */}
+              <rect x="-38" y="-11" width="2.5" height="5" rx="1" fill="#EF4444" />
+              <rect x="-38" y="6" width="2.5" height="5" rx="1" fill="#EF4444" />
+
+              {/* Sidharth's Racing Number 10 */}
+              <text
+                x="6"
+                y="3.5"
+                fontSize="8"
+                fontWeight="bold"
+                fontFamily="'Plus Jakarta Sans', sans-serif"
+                fill="#462615"
+                textAnchor="middle"
+              >
+                10
+              </text>
+
+              {/* Animated Exhaust Flames */}
+              <g className="car-exhaust">
+                <circle cx="-42" cy="-4" r="3" fill="#FAD105" opacity="0.85" />
+                <circle cx="-48" cy="-3" r="2.2" fill="#FF8C00" opacity="0.75" />
+                <circle cx="-42" cy="4" r="3" fill="#FAD105" opacity="0.85" />
+                <circle cx="-48" cy="3" r="2.2" fill="#FF8C00" opacity="0.75" />
+              </g>
+
+              {/* Honk Speech Tooltip */}
+              {honking && (
+                <g transform="translate(0, -32)">
+                  <rect x="-48" y="-16" width="96" height="24" rx="12" fill="#FFFFFF" stroke="#462615" strokeWidth="2" />
+                  <polygon points="-4,8 4,8 0,14" fill="#462615" />
+                  <text
+                    x="0"
+                    y="1"
+                    fontSize="13"
+                    fontWeight="bold"
+                    fontFamily="'Gaegu', cursive"
+                    fill="#462615"
+                    textAnchor="middle"
+                  >
+                    BEEP BEEP! 🏎️
+                  </text>
+                </g>
+              )}
+            </g>
           </svg>
 
           {/* 1. HERO SECTION (AUTHENTIC 3D LIVE PERSON - ZERO TEXT OVERLAP) */}
