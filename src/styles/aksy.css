@@ -400,14 +400,14 @@ img {
   clip-path: inset(-90px 0 0 0);
 }
 
-/* Yellow Winding Ribbon & 3D Track Car */
+/* Yellow Winding Ribbon & 3D Track Car (STRICTLY BELOW HERO CONTENT) */
 .story-ribbon {
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  z-index: 3;
+  z-index: 1; /* Below hero image, text, and cards */
   overflow: visible;
   pointer-events: none;
 }
@@ -423,6 +423,16 @@ img {
   stroke-width: 58px;
 }
 
+/* Black Dotted Center Line on Yellow Road */
+.rb .road-dash {
+  fill: none;
+  stroke: #462615;
+  stroke-width: 3.5px;
+  stroke-dasharray: 14 16;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+
 /* 3D Track Car that runs on the yellow line */
 #trackCar {
   pointer-events: auto;
@@ -432,7 +442,7 @@ img {
 }
 
 #trackCar:hover {
-  filter: drop-shadow(0 0 14px rgba(250, 209, 5, 0.95)) !important;
+  filter: drop-shadow(0 0 16px rgba(250, 209, 5, 0.95)) !important;
 }
 
 .car-exhaust {
@@ -440,8 +450,8 @@ img {
 }
 
 @keyframes exhaustPuff {
-  0% { transform: translate(-42px, 0) scale(0.85); opacity: 0.6; }
-  100% { transform: translate(-48px, 0) scale(1.25); opacity: 0.95; }
+  0% { transform: translate(-44px, 7px) scale(0.85); opacity: 0.6; }
+  100% { transform: translate(-50px, 7px) scale(1.3); opacity: 0.95; }
 }
 
 .car-honk-bubble {
@@ -473,7 +483,7 @@ img {
    ========================================================================== */
 .hero {
   position: relative;
-  z-index: 2;
+  z-index: 5; /* Above ribbon road */
   min-height: 100vh;
   min-height: 100svh;
   display: flex;
@@ -484,6 +494,7 @@ img {
 
 .hero .frame {
   position: relative;
+  z-index: 6; /* Above ribbon road */
   width: 100%;
   display: grid;
   grid-template-columns: minmax(320px, 440px) minmax(0, 1fr);
@@ -493,6 +504,7 @@ img {
 
 .hero-pic {
   position: relative;
+  z-index: 7; /* Above ribbon road */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -683,7 +695,7 @@ img {
 /* WORDS COLUMN (CLEAN, SPACIOUS & NEVER OVERLAPPED) */
 .words {
   position: relative;
-  z-index: 3;
+  z-index: 7; /* Above ribbon road */
   display: flex;
   flex-direction: column;
   gap: var(--s2);
@@ -763,13 +775,13 @@ img {
    ========================================================================== */
 .path {
   position: relative;
-  z-index: 2;
+  z-index: 5;
   padding-block: var(--s6);
 }
 
 .beat {
   position: relative;
-  z-index: 1;
+  z-index: 6;
   min-height: 85vh;
   display: flex;
   align-items: center;
@@ -787,7 +799,7 @@ img {
 .pose {
   grid-row: 1;
   position: relative;
-  z-index: 2;
+  z-index: 7;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -835,7 +847,7 @@ img {
 .card {
   grid-row: 1;
   position: relative;
-  z-index: 3;
+  z-index: 7;
   background: var(--paper);
   border-radius: 36px;
   padding: var(--s4) var(--s4) calc(var(--s4) + 6px);
