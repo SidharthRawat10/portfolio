@@ -263,7 +263,7 @@ export default function App() {
           <div className="hero-bg"></div>
           <div className="sheet-bg"></div>
 
-          {/* SVG RIBBON CONNECTING HERO TO PATH + 3D TRACK CAR RACER */}
+          {/* SVG RIBBON CONNECTING HERO TO PATH + BLACK PORSCHE 911 RACER */}
           <svg
             id="storyRibbonSvg"
             className="story-ribbon rb"
@@ -272,13 +272,31 @@ export default function App() {
             aria-hidden="true"
           >
             <defs>
-              <linearGradient id="carHeadlightBeam" x1="0%" y1="50%" x2="100%" y2="50%">
-                <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.85" />
-                <stop offset="35%" stopColor="#FAD105" stopOpacity="0.65" />
+              {/* Porsche Xenon Headlight Beam */}
+              <linearGradient id="porscheHeadlightBeam" x1="0%" y1="50%" x2="100%" y2="50%">
+                <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.9" />
+                <stop offset="30%" stopColor="#FAD105" stopOpacity="0.65" />
                 <stop offset="100%" stopColor="#FAD105" stopOpacity="0" />
               </linearGradient>
-              <filter id="car3DShadow" x="-30%" y="-30%" width="160%" height="160%">
-                <feDropShadow dx="0" dy="10" stdDeviation="6" floodColor="#462615" floodOpacity="0.32" />
+
+              {/* Porsche 911 Gloss Black Body Gradient */}
+              <linearGradient id="porscheBlackGloss" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#22222C" />
+                <stop offset="30%" stopColor="#111116" />
+                <stop offset="50%" stopColor="#2D2D3B" />
+                <stop offset="70%" stopColor="#111116" />
+                <stop offset="100%" stopColor="#1C1C24" />
+              </linearGradient>
+
+              {/* 911 Glass Canopy Tint */}
+              <linearGradient id="porscheGlass" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#1E1E2A" />
+                <stop offset="50%" stopColor="#0B0B10" />
+                <stop offset="100%" stopColor="#1A1A24" />
+              </linearGradient>
+
+              <filter id="porscheShadow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="12" stdDeviation="6" floodColor="#1a0c06" floodOpacity="0.4" />
               </filter>
             </defs>
 
@@ -289,94 +307,127 @@ export default function App() {
               strokeWidth="58"
             />
 
-            {/* 3D RACER CAR THAT RUNS ON THE YELLOW LINE */}
+            {/* BLACK PORSCHE 911 RUNNING ON THE YELLOW LINE */}
             <g
               id="trackCar"
               onClick={handleCarClick}
-              style={{ filter: 'url(#car3DShadow)', cursor: 'pointer', pointerEvents: 'auto' }}
+              style={{ filter: 'url(#porscheShadow)', cursor: 'pointer', pointerEvents: 'auto' }}
             >
-              {/* Headlight beams lighting the track */}
-              <polygon points="36,-9 140,-32 140,32 36,9" fill="url(#carHeadlightBeam)" />
+              {/* Dual Xenon Headlight Beams */}
+              <polygon points="34,-11 145,-38 145,-2 34,-7" fill="url(#porscheHeadlightBeam)" />
+              <polygon points="34,7 145,2 145,38 34,11" fill="url(#porscheHeadlightBeam)" />
 
-              {/* Tires / Wheels (4 rubber tires with chrome accents) */}
-              <rect x="15" y="-22" width="16" height="7" rx="3" fill="#1b120c" stroke="#462615" strokeWidth="1.5" />
-              <circle cx="23" cy="-18.5" r="2.2" fill="#FAD105" />
+              {/* Widebody Performance Tires with PCCB Yellow Calipers */}
+              {/* Front Left */}
+              <rect x="16" y="-23" width="16" height="7.5" rx="3" fill="#0A0A0D" stroke="#222" strokeWidth="1" />
+              <rect x="22" y="-20" width="3" height="4" fill="#FAD105" rx="1" />
+              {/* Front Right */}
+              <rect x="16" y="15.5" width="16" height="7.5" rx="3" fill="#0A0A0D" stroke="#222" strokeWidth="1" />
+              <rect x="22" y="16" width="3" height="4" fill="#FAD105" rx="1" />
+              {/* Rear Left (Wide Hips) */}
+              <rect x="-29" y="-24.5" width="17" height="8" rx="3" fill="#0A0A0D" stroke="#222" strokeWidth="1" />
+              <rect x="-23" y="-21.5" width="3.5" height="4" fill="#FAD105" rx="1" />
+              {/* Rear Right (Wide Hips) */}
+              <rect x="-29" y="16.5" width="17" height="8" rx="3" fill="#0A0A0D" stroke="#222" strokeWidth="1" />
+              <rect x="-23" y="17.5" width="3.5" height="4" fill="#FAD105" rx="1" />
 
-              <rect x="15" y="15" width="16" height="7" rx="3" fill="#1b120c" stroke="#462615" strokeWidth="1.5" />
-              <circle cx="23" cy="18.5" r="2.2" fill="#FAD105" />
+              {/* Ground contact shadow */}
+              <ellipse cx="0" cy="0" rx="42" ry="22" fill="rgba(20, 10, 5, 0.3)" />
 
-              <rect x="-28" y="-22" width="16" height="7" rx="3" fill="#1b120c" stroke="#462615" strokeWidth="1.5" />
-              <circle cx="-20" cy="-18.5" r="2.2" fill="#FAD105" />
-
-              <rect x="-28" y="15" width="16" height="7" rx="3" fill="#1b120c" stroke="#462615" strokeWidth="1.5" />
-              <circle cx="-20" cy="18.5" r="2.2" fill="#FAD105" />
-
-              {/* Aerodynamic Sports Chassis */}
+              {/* Porsche 911 Sculpted Black Body (Flared Rear Hips, Tapered Waist, Smooth Nose) */}
               <path
-                d="M -33 -15 C -36 -15 -38 -8 -38 0 C -38 8 -36 15 -33 15 L 18 15 C 28 15 35 9 36 0 C 35 -9 28 -15 18 -15 Z"
-                fill="#FFFFFF"
+                d="M -34 -14 C -37 -14 -39 -8 -39 0 C -39 8 -37 14 -34 14 L -20 17 C -15 17 -10 14 -4 14 L 14 15 C 22 15 28 16 33 13 C 37 10 39 5 39 0 C 39 -5 37 -10 33 -13 C 28 -16 22 -15 14 -15 L -4 -14 C -10 -14 -15 -17 -20 -17 Z"
+                fill="url(#porscheBlackGloss)"
                 stroke="#462615"
-                strokeWidth="3.5"
+                strokeWidth="2.8"
                 strokeLinejoin="round"
               />
 
-              {/* Sunshine Yellow & Dark Ink Racing Stripes */}
-              <path d="M -37 -3 L 35 -3 L 35 3 L -37 3 Z" fill="#FAD105" />
-              <path d="M -37 -1 L 35 -1 L 35 1 L -37 1 Z" fill="#462615" />
+              {/* Hood Crease Reflections */}
+              <path d="M 14 -10 Q 26 -8 34 -4" fill="none" stroke="#3A3A4A" strokeWidth="1.2" opacity="0.8" />
+              <path d="M 14 10 Q 26 8 34 4" fill="none" stroke="#3A3A4A" strokeWidth="1.2" opacity="0.8" />
 
-              {/* Hood scoop */}
-              <path d="M 16 -6 L 24 -4 L 24 4 L 16 6 Z" fill="#462615" opacity="0.9" />
+              {/* Porsche Gold Crest on Hood */}
+              <polygon points="36,0 33.5,-2 32,0 33.5,2" fill="#FAD105" stroke="#462615" strokeWidth="0.8" />
 
-              {/* Cockpit & Glass Windshield */}
+              {/* Porsche 911 Teardrop Cockpit Glass */}
               <path
-                d="M -13 -11 L 8 -10 C 14 -10 16 -6 17 0 C 16 6 14 10 8 10 L -13 11 C -16 11 -17 6 -17 0 C -17 -6 -16 -11 -13 -11 Z"
-                fill="#2B180D"
-                stroke="#462615"
-                strokeWidth="2"
+                d="M -16 -10.5 L 6 -9.5 C 13 -9.5 15 -6 16 0 C 15 6 13 9.5 6 9.5 L -16 10.5 C -20 10.5 -22 6 -23 0 C -22 -6 -20 -10.5 -16 -10.5 Z"
+                fill="url(#porscheGlass)"
+                stroke="#1E1E26"
+                strokeWidth="1.8"
               />
-              <path d="M -8 -8 L 5 -7 L 1 7 L -10 7 Z" fill="#FFFFFF" opacity="0.3" />
 
-              {/* Driver Helmet */}
-              <circle cx="-3" cy="0" r="5" fill="#FAD105" stroke="#462615" strokeWidth="1.5" />
-              <rect x="-1" y="-3" width="4" height="6" rx="1.5" fill="#1b120c" />
+              {/* Windshield Glass Glare */}
+              <path d="M -9 -8 L 4 -7 L 1 7 L -12 7 Z" fill="#FFFFFF" opacity="0.18" />
 
-              {/* Rear GT Wing / Spoiler */}
-              <rect x="-37" y="-17" width="6" height="34" rx="2" fill="#FAD105" stroke="#462615" strokeWidth="2.5" />
-              <rect x="-34" y="-8" width="3" height="16" fill="#462615" />
+              {/* Rear Decklid Engine Cooling Louvers (Classic 911 slats) */}
+              <g stroke="#3A3A48" strokeWidth="1" opacity="0.85">
+                <line x1="-27" y1="-8" x2="-27" y2="8" />
+                <line x1="-30" y1="-7" x2="-30" y2="7" />
+                <line x1="-33" y1="-6" x2="-33" y2="6" />
+              </g>
 
-              {/* High-intensity Headlights */}
-              <circle cx="34" cy="-7" r="3.5" fill="#FFFDE6" stroke="#462615" strokeWidth="1.5" />
-              <circle cx="34" cy="7" r="3.5" fill="#FFFDE6" stroke="#462615" strokeWidth="1.5" />
+              {/* Aero Sport Mirrors */}
+              <ellipse cx="6" cy="-14.5" rx="3.5" ry="2" fill="#111116" stroke="#462615" strokeWidth="1" />
+              <ellipse cx="6" cy="14.5" rx="3.5" ry="2" fill="#111116" stroke="#462615" strokeWidth="1" />
 
-              {/* Taillights */}
-              <rect x="-38" y="-11" width="2.5" height="5" rx="1" fill="#EF4444" />
-              <rect x="-38" y="6" width="2.5" height="5" rx="1" fill="#EF4444" />
+              {/* Classic Oval 911 Headlights with 4-Point LED Matrix */}
+              {/* Left Headlamp */}
+              <circle cx="33" cy="-9" r="4.2" fill="#0A0A0F" stroke="#333342" strokeWidth="1.2" />
+              <circle cx="33" cy="-9" r="2.2" fill="#FFFFFF" />
+              <circle cx="31.8" cy="-10.2" r="0.7" fill="#88DDFF" />
+              <circle cx="34.2" cy="-10.2" r="0.7" fill="#88DDFF" />
+              <circle cx="31.8" cy="-7.8" r="0.7" fill="#88DDFF" />
+              <circle cx="34.2" cy="-7.8" r="0.7" fill="#88DDFF" />
 
-              {/* Sidharth's Racing Number 10 */}
+              {/* Right Headlamp */}
+              <circle cx="33" cy="9" r="4.2" fill="#0A0A0F" stroke="#333342" strokeWidth="1.2" />
+              <circle cx="33" cy="9" r="2.2" fill="#FFFFFF" />
+              <circle cx="31.8" cy="7.8" r="0.7" fill="#88DDFF" />
+              <circle cx="34.2" cy="7.8" r="0.7" fill="#88DDFF" />
+              <circle cx="31.8" cy="10.2" r="0.7" fill="#88DDFF" />
+              <circle cx="34.2" cy="10.2" r="0.7" fill="#88DDFF" />
+
+              {/* Full-Width Rear LED Red Light Strip (Modern 992 Signature) */}
+              <path
+                d="M -38 -12 Q -39 0 -38 12"
+                fill="none"
+                stroke="#FF1E28"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+
+              {/* Rear 911 Emblem */}
               <text
-                x="6"
-                y="3.5"
-                fontSize="8"
+                x="-36"
+                y="1.8"
+                fontSize="5"
                 fontWeight="bold"
                 fontFamily="'Plus Jakarta Sans', sans-serif"
-                fill="#462615"
+                fill="#E5E7EB"
                 textAnchor="middle"
+                letterSpacing="1"
               >
-                10
+                911
               </text>
 
-              {/* Animated Exhaust Flames */}
+              {/* Dual Stainless Steel Sports Exhausts */}
+              <ellipse cx="-40" cy="-4" rx="1.8" ry="2.2" fill="#777" stroke="#222" strokeWidth="1" />
+              <ellipse cx="-40" cy="4" rx="1.8" ry="2.2" fill="#777" stroke="#222" strokeWidth="1" />
+
+              {/* Animated Turbo Exhaust Pulse */}
               <g className="car-exhaust">
-                <circle cx="-42" cy="-4" r="3" fill="#FAD105" opacity="0.85" />
-                <circle cx="-48" cy="-3" r="2.2" fill="#FF8C00" opacity="0.75" />
-                <circle cx="-42" cy="4" r="3" fill="#FAD105" opacity="0.85" />
-                <circle cx="-48" cy="3" r="2.2" fill="#FF8C00" opacity="0.75" />
+                <circle cx="-43" cy="-4" r="3" fill="#60A5FA" opacity="0.9" />
+                <circle cx="-49" cy="-4" r="2" fill="#3B82F6" opacity="0.75" />
+                <circle cx="-43" cy="4" r="3" fill="#60A5FA" opacity="0.9" />
+                <circle cx="-49" cy="4" r="2" fill="#3B82F6" opacity="0.75" />
               </g>
 
               {/* Honk Speech Tooltip */}
               {honking && (
                 <g transform="translate(0, -32)">
-                  <rect x="-48" y="-16" width="96" height="24" rx="12" fill="#FFFFFF" stroke="#462615" strokeWidth="2" />
+                  <rect x="-56" y="-16" width="112" height="24" rx="12" fill="#FFFFFF" stroke="#462615" strokeWidth="2" />
                   <polygon points="-4,8 4,8 0,14" fill="#462615" />
                   <text
                     x="0"
@@ -387,7 +438,7 @@ export default function App() {
                     fill="#462615"
                     textAnchor="middle"
                   >
-                    BEEP BEEP! 🏎️
+                    PORSCHE 911 🏁
                   </text>
                 </g>
               )}
