@@ -423,14 +423,13 @@ img {
   stroke-width: 58px;
 }
 
-/* Black Dotted Center Line on Yellow Road */
+/* Black Dotted Center Line on Yellow Road (Reduced & Subtle, Zero Brown) */
 .rb .road-dash {
   fill: none;
-  stroke: #462615;
-  stroke-width: 3.5px;
-  stroke-dasharray: 14 16;
+  stroke: rgba(0, 0, 0, 0.25);
+  stroke-width: 2px;
+  stroke-dasharray: 8 16;
   stroke-linecap: round;
-  opacity: 0.85;
 }
 
 /* 3D Track Car that runs on the yellow line */
