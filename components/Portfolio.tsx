@@ -61,6 +61,8 @@ export default function Portfolio() {
                       <img 
                         src={imgSrc} 
                         alt={`${item.title} - Image ${imgIndex + 1}`}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-auto object-contain transition-transform duration-700 ease-out group-hover:scale-[1.02]"
                         onError={(e) => {
                            (e.target as HTMLImageElement).src = `https://via.placeholder.com/1200x800/111111/444444?text=Upload+Image+for+${item.title.replace(/ /g, '+')}`;

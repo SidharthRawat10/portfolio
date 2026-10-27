@@ -90,6 +90,8 @@ export default function Navbar() {
               <img 
                 src="/slides/8.jpg" 
                 alt="About" 
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-contain"
               />
             </motion.div>

@@ -140,7 +140,7 @@ function VideoCard({
           loop
           muted={isMuted}
           playsInline
-          preload="metadata"
+          preload="none"
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
         />
 
