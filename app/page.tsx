@@ -2,6 +2,7 @@ import ScrollyCanvas from "@/components/ScrollyCanvas";
 import Overlay from "@/components/Overlay";
 import Projects from "@/components/Projects";
 import Portfolio from "@/components/Portfolio";
+import Videos from "@/components/Videos";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -26,6 +27,9 @@ export default function Home() {
 
       {/* 5-Slide Portfolio Section */}
       <Portfolio />
+
+      {/* Videos Section */}
+      <Videos />
 
       <Footer />
     </main>
