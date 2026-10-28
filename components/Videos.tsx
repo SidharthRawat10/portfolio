@@ -98,7 +98,6 @@ function VideoCard({
   const handleMouseEnter = () => {
     setIsHovered(true);
     if (videoRef.current) {
-      videoRef.current.preload = "auto";
       videoRef.current.loop = true;
       videoRef.current
         .play()
@@ -112,6 +111,10 @@ function VideoCard({
     if (!isPinnedPlaying && videoRef.current) {
       videoRef.current.pause();
       setIsPlaying(false);
+      // Reset back to thumbnail frame
+      try {
+        videoRef.current.currentTime = 0.5;
+      } catch (err) {}
     }
   };
 
@@ -127,7 +130,6 @@ function VideoCard({
       setIsPlaying(false);
       setIsPinnedPlaying(false);
     } else {
-      videoRef.current.preload = "auto";
       videoRef.current.loop = true;
       videoRef.current
         .play()
@@ -170,16 +172,23 @@ function VideoCard({
       >
         <video
           ref={videoRef}
-          src={item.src}
+          src={`${item.src}#t=0.5`}
           loop
           muted={isMuted}
           playsInline
-          preload="none"
+          preload="metadata"
+          onLoadedMetadata={() => {
+            if (videoRef.current && !isPlaying) {
+              try {
+                videoRef.current.currentTime = 0.5;
+              } catch (err) {}
+            }
+          }}
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
         />
 
         {/* Ambient Dark Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30 pointer-events-none transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none transition-opacity duration-300" />
 
         {/* Looping Badge */}
         <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
