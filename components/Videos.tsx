@@ -16,16 +16,19 @@ interface VideoItem {
   id: string;
   title: string;
   category: string;
+  type: "all" | "commercial" | "reels" | "motion";
   src: string;
   aspect: "horizontal" | "vertical";
   duration: string;
 }
 
 const videoData: VideoItem[] = [
+  // Set 1
   {
     id: "video-1",
     title: "Cinematic Film & Brand Narrative",
     category: "Commercial / Brand Production",
+    type: "commercial",
     src: "/videos/COOPQgQxEzVLS8SgYl1S5tCiqo.mp4",
     aspect: "horizontal",
     duration: "0:42",
@@ -34,6 +37,7 @@ const videoData: VideoItem[] = [
     id: "video-2",
     title: "High-Energy Social Campaign Reel",
     category: "Vertical Reel / Short Form",
+    type: "reels",
     src: "/videos/DNORuJa1xbjCHWUaW9WyHyXds.mp4",
     aspect: "vertical",
     duration: "0:30",
@@ -42,9 +46,38 @@ const videoData: VideoItem[] = [
     id: "video-3",
     title: "Dynamic Visual & Motion Edit",
     category: "Promo / Motion Graphic",
+    type: "motion",
     src: "/videos/gaIKjgI60O25NiM4XzsmMxBA43A.mp4",
     aspect: "horizontal",
     duration: "0:09",
+  },
+  // Set 2 (New Videos)
+  {
+    id: "video-4",
+    title: "Creative Storytelling & Social Reel",
+    category: "Vertical Reel / Social Campaign",
+    type: "reels",
+    src: "/videos/creative-social-reel.mp4",
+    aspect: "vertical",
+    duration: "0:43",
+  },
+  {
+    id: "video-5",
+    title: "2D Motion Design & Kinetic Animation",
+    category: "Motion Design / 2D Animation",
+    type: "motion",
+    src: "/videos/2d-motion-design.mp4",
+    aspect: "horizontal",
+    duration: "0:24",
+  },
+  {
+    id: "video-6",
+    title: "Action Sports & Cricket Motion Promo",
+    category: "Sports Promo / Dynamic Edit",
+    type: "commercial",
+    src: "/videos/cricket-sports-promo.mp4",
+    aspect: "horizontal",
+    duration: "0:30",
   },
 ];
 
@@ -61,10 +94,11 @@ function VideoCard({
   const [isHovered, setIsHovered] = useState(false);
   const [isPinnedPlaying, setIsPinnedPlaying] = useState(false);
 
-  // Play in loop on hover or when pinned by click
+  // Play in loop on hover or when activated
   const handleMouseEnter = () => {
     setIsHovered(true);
     if (videoRef.current) {
+      videoRef.current.preload = "auto";
       videoRef.current.loop = true;
       videoRef.current
         .play()
@@ -81,8 +115,7 @@ function VideoCard({
     }
   };
 
-  const handleCardClick = (e: React.MouseEvent) => {
-    // Open theater modal for full playback in loop
+  const handleCardClick = () => {
     onOpenModal(item);
   };
 
@@ -94,6 +127,7 @@ function VideoCard({
       setIsPlaying(false);
       setIsPinnedPlaying(false);
     } else {
+      videoRef.current.preload = "auto";
       videoRef.current.loop = true;
       videoRef.current
         .play()
@@ -115,10 +149,10 @@ function VideoCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
       className={`group relative rounded-3xl overflow-hidden bg-neutral-900/60 border border-white/10 hover:border-white/30 transition-all duration-500 shadow-2xl flex flex-col cursor-pointer ${
         item.aspect === "vertical" ? "md:row-span-2" : ""
       }`}
@@ -147,7 +181,7 @@ function VideoCard({
         {/* Ambient Dark Gradient Overlays */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30 pointer-events-none transition-opacity duration-300" />
 
-        {/* Looping Badge (always visible or highlighted when playing) */}
+        {/* Looping Badge */}
         <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
           <span
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-md transition-all duration-300 ${
@@ -209,7 +243,7 @@ function VideoCard({
           </motion.button>
         </div>
 
-        {/* Bottom Hover Hint */}
+        {/* Bottom Title & Details */}
         <div className="absolute bottom-4 left-4 right-4 z-20 flex items-end justify-between gap-3 pointer-events-none">
           <div>
             <span className="text-[11px] font-semibold tracking-widest uppercase text-gray-400 block mb-1">
@@ -230,11 +264,12 @@ function VideoCard({
 
 export default function Videos() {
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
+  const [activeFilter, setActiveFilter] = useState<"all" | "commercial" | "reels" | "motion">("all");
   const modalVideoRef = useRef<HTMLVideoElement>(null);
   const [modalIsPlaying, setModalIsPlaying] = useState(true);
   const [modalIsMuted, setModalIsMuted] = useState(false);
 
-  // When opening modal, play video in loop automatically
+  // Play in loop automatically when modal opens
   useEffect(() => {
     if (selectedVideo && modalVideoRef.current) {
       modalVideoRef.current.currentTime = 0;
@@ -244,7 +279,6 @@ export default function Videos() {
         .play()
         .then(() => setModalIsPlaying(true))
         .catch(() => {
-          // If browser blocks unmuted autoplay, mute and retry
           if (modalVideoRef.current) {
             modalVideoRef.current.muted = true;
             setModalIsMuted(true);
@@ -283,6 +317,11 @@ export default function Videos() {
     setModalIsMuted(newMuted);
   };
 
+  const filteredVideos =
+    activeFilter === "all"
+      ? videoData
+      : videoData.filter((v) => v.type === activeFilter);
+
   return (
     <section
       id="videos"
@@ -298,7 +337,7 @@ export default function Videos() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 md:mb-20"
+          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16"
         >
           <div>
             <div className="flex items-center gap-3 mb-3">
@@ -316,23 +355,73 @@ export default function Videos() {
           </p>
         </motion.div>
 
-        {/* Bento Grid: 2 columns on desktop (1 vertical reel spanning full height, 2 horizontal cards) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch">
-          {/* Card 1 (Horizontal) */}
-          <div className="lg:col-span-2">
-            <VideoCard item={videoData[0]} onOpenModal={setSelectedVideo} />
-          </div>
-
-          {/* Card 2 (Vertical Reel spanning height) */}
-          <div className="lg:col-span-1 lg:row-span-2 flex flex-col">
-            <VideoCard item={videoData[1]} onOpenModal={setSelectedVideo} />
-          </div>
-
-          {/* Card 3 (Horizontal) */}
-          <div className="lg:col-span-2">
-            <VideoCard item={videoData[2]} onOpenModal={setSelectedVideo} />
-          </div>
+        {/* Filter Pills */}
+        <div className="flex flex-wrap items-center gap-3 mb-12">
+          {[
+            { id: "all", label: `All Works (${videoData.length})` },
+            { id: "commercial", label: "Commercial & Sports" },
+            { id: "reels", label: "Vertical Reels (9:16)" },
+            { id: "motion", label: "Motion Graphics" },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveFilter(tab.id as any)}
+              className={`px-5 py-2.5 rounded-full text-xs md:text-sm font-medium transition-all duration-300 border ${
+                activeFilter === tab.id
+                  ? "bg-white text-black border-white shadow-lg"
+                  : "bg-white/5 text-gray-400 border-white/10 hover:text-white hover:border-white/25"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
+
+        {/* Dynamic Showcase Grid */}
+        {activeFilter === "all" ? (
+          <div className="flex flex-col gap-8 md:gap-12">
+            {/* Bento Grid 1 (Videos 1, 2, 3) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch">
+              <div className="lg:col-span-2">
+                <VideoCard item={videoData[0]} onOpenModal={setSelectedVideo} />
+              </div>
+              <div className="lg:col-span-1 lg:row-span-2 flex flex-col">
+                <VideoCard item={videoData[1]} onOpenModal={setSelectedVideo} />
+              </div>
+              <div className="lg:col-span-2">
+                <VideoCard item={videoData[2]} onOpenModal={setSelectedVideo} />
+              </div>
+            </div>
+
+            {/* Bento Grid 2 (Videos 4, 5, 6 - Balanced alternating composition) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch">
+              <div className="lg:col-span-1 lg:row-span-2 flex flex-col">
+                <VideoCard item={videoData[3]} onOpenModal={setSelectedVideo} />
+              </div>
+              <div className="lg:col-span-2">
+                <VideoCard item={videoData[4]} onOpenModal={setSelectedVideo} />
+              </div>
+              <div className="lg:col-span-2">
+                <VideoCard item={videoData[5]} onOpenModal={setSelectedVideo} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch">
+            {filteredVideos.map((item) => (
+              <div
+                key={item.id}
+                className={
+                  item.aspect === "vertical"
+                    ? "lg:col-span-1"
+                    : "lg:col-span-2"
+                }
+              >
+                <VideoCard item={item} onOpenModal={setSelectedVideo} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Cinematic Theater Modal */}
